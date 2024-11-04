@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18-alpine as builder
 
 WORKDIR /app
 
@@ -12,6 +12,12 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 3000
+# Use nginx to serve static files
+FROM nginx:alpine
 
-CMD ["npm", "run", "preview", "--", "--port", "3000", "--host"]
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

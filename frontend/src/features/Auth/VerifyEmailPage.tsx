@@ -34,9 +34,9 @@ const VerifyEmailPage = () => {
         spread: 70,
         origin: { y: 0.6 },
       });
-      // setTimeout(() => {
-      //   navigate("/login");
-      // }, 5000);
+      setTimeout(() => {
+        navigate("/login");
+      }, 5000);
       toast({
         title: "Success",
         description: "Email verified successfully! Welcome to DevCollab!",

@@ -95,7 +95,7 @@ export class UsersService {
       { userId: user.id },
       { expiresIn: '24h' },
     );
-    const verificationUrl = `http://localhost:5173/verify-email?token=${verificationToken}`;
+    const verificationUrl = `http://209.38.243.102/verify-email?token=${verificationToken}`;
 
     await this.mailerService.sendEmail(
       user.email,
