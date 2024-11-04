@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: devcollab-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=development
+      - PORT=8000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=devcollab
+      - JWT_SECRET=N2BqJsI31cBndrlnzfFe6PtK2gqG0y0tTLmxXT9qME
+      - JWT_EXPIRES_IN=7d
+      - EMAIL_USER=glassisaif@gmail.com
+      - EMAIL_PASS=udtypgnzmaggbyfu
+    networks:
+      - devcollab-network
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: devcollab-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://backend:8000
+    networks:
+      - devcollab-network
+    depends_on:
+      - backend
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: devcollab-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=devcollab
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - devcollab-network
+
+networks:
+  devcollab-network:
+    driver: bridge
+    name: devcollab-network
+
+volumes:
+  postgres_data:

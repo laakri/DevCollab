@@ -1,0 +1,72 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
+  OneToMany,
+} from 'typeorm';
+import { Exclude } from 'class-transformer';
+import * as bcrypt from 'bcryptjs';
+import { Session } from '../../sessions/entities/session.entity';
+import { LearningPost } from '../../learning-posts/entities/learning-post.entity';
+
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ unique: true })
+  email: string;
+
+  @Column({ unique: true })
+  username: string;
+
+  @Column()
+  @Exclude()
+  password: string;
+
+  @Column({ nullable: true })
+  fullName: string;
+
+  @Column({ type: 'json', nullable: true })
+  skills: string[];
+
+  @Column({ type: 'json', nullable: true })
+  interests: string[];
+
+  @Column({ default: false })
+  isEmailVerified: boolean;
+
+  @Column({ default: 'user' })
+  role: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @OneToMany(() => Session, (session) => session.host)
+  hostedSessions: Session[];
+
+  @OneToMany(() => Session, (session) => session.participant)
+  participatingSessions: Session[];
+
+  @OneToMany(() => LearningPost, (learningPost) => learningPost.user)
+  learningPosts: LearningPost[];
+
+  @BeforeInsert()
+  async hashPassword() {
+    if (this.password) {
+      const salt = await bcrypt.genSalt();
+      this.password = await bcrypt.hash(this.password, salt);
+    }
+  }
+
+  async validatePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
+}
