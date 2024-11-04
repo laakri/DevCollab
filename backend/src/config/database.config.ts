@@ -12,7 +12,7 @@ export const databaseConfig = registerAs(
     password: envConfig().database.password,
     database: envConfig().database.name,
     entities: ['dist/**/*.entity{.ts,.js}'],
-    synchronize: envConfig().nodeEnv === 'development',
+    synchronize: true,
     logging: envConfig().nodeEnv === 'development',
     ssl: false,
   }),
