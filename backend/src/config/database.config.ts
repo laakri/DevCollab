@@ -14,6 +14,6 @@ export const databaseConfig = registerAs(
     entities: ['dist/**/*.entity{.ts,.js}'],
     synchronize: envConfig().nodeEnv === 'development',
     logging: envConfig().nodeEnv === 'development',
-    ssl: envConfig().nodeEnv === 'production',
+    ssl: false,
   }),
 );
