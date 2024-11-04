@@ -67,20 +67,6 @@ export function Navbar() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="flex items-center space-x-1">
-            <FileText className="h-4 w-4" />
-            <span className="hidden sm:inline">Test</span>
-            <ChevronDown className="h-4 w-4 ml-1" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-48">
-          <Link to="/test">
-            <DropdownMenuItem>Test Page</DropdownMenuItem>
-          </Link>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex items-center space-x-1">
             <Laptop className="h-4 w-4" />
             <span className="hidden sm:inline">Projects</span>
             <ChevronDown className="h-4 w-4 ml-1" />
