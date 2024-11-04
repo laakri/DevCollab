@@ -9,22 +9,27 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Stop existing containers
         run: |
           docker-compose -f docker-compose.prod.yml down || true
 
-      - name: Remove existing images
-        run: |
-          docker image prune -f
-
       - name: Build and start containers
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          API_URL: ${{ secrets.API_URL }}
         run: |
           docker-compose -f docker-compose.prod.yml up -d --build
-        env:
-          VITE_API_URL: http://209.38.243.102
 
       - name: Clean up
         run: |
