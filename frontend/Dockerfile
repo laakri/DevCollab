@@ -15,9 +15,15 @@ RUN npm run build
 # Use nginx to serve static files
 FROM nginx:alpine
 
+# Remove default nginx static files
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy static files from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copy nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 3000
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD sed -i 's/listen\(.*\)80;/listen 3000;/' /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'
