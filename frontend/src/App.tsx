@@ -9,7 +9,7 @@ import CollaborationPage from "./features/Collaboration/CollaborationPage";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import MatchupPage from "./features/Matchup/MatchupPage";
 import LearningJourneyPage from "./pages/LearningJourneyPage";
-import ProfilePage from "./pages/ProfilePage";
+import ProfilePage from "./features/Profile/ProfilePage";
 import DocumentationPage from "./pages/Documentation";
 import { Toaster } from "@/components/ui/toaster";
 import SignUpPage from "@/features/Auth/SignUpPage";
@@ -17,7 +17,8 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import LearningPostsPage from "@/features/LearningPosts/LearningPostsPage";
 import VerifyEmailPage from "@/features/Auth/VerifyEmailPage";
 import { useAuthCheck } from "@/hooks/useAuthCheck";
-import SettingsPage from "./pages/SettingsPage";
+import SettingsPage from "./features/Profile/SettingsPage";
+import { LiarGame } from "./features/game/LiarGame";
 
 function App() {
   useAuthCheck();
@@ -28,13 +29,14 @@ function App() {
         <Router>
           <div className="min-h-screen flex flex-col">
             <Toaster />
-            <Navbar />
+            {window.location.pathname !== "/tahchifih" && <Navbar />}
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignUpPage />} />
               <Route path="/verify-email" element={<VerifyEmailPage />} />
               <Route path="/projects" element={<LearningExchangePage />} />
+              <Route path="/tahchifih" element={<LiarGame />} />
               <Route
                 path="/CollaborationPage"
                 element={<CollaborationPage />}
@@ -43,7 +45,7 @@ function App() {
               <Route path="/learninge" element={<LearningJourneyPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/docs" element={<DocumentationPage />} />
-              <Route path="/settingspage" element={<SettingsPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
               <Route
                 path="/learning-posts"
                 element={

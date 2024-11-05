@@ -12,6 +12,8 @@ import { RegisterDto } from './dto/register-user.dto';
 import { LoginDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '../../mailer/mailer.service';
+import { UpdateSettingsDto } from './dto/update-settings.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -138,5 +140,89 @@ export class UsersService {
       'Welcome',
       'Thanks for joining our platform!',
     );
+  }
+
+  async updateSettings(userId: string, updateSettingsDto: UpdateSettingsDto) {
+    const user = await this.findById(userId);
+
+    if (updateSettingsDto.notificationPreferences) {
+      user.notificationPreferences = {
+        ...user.notificationPreferences,
+        ...updateSettingsDto.notificationPreferences,
+      };
+    }
+
+    if (updateSettingsDto.appearanceSettings) {
+      user.appearanceSettings = {
+        ...user.appearanceSettings,
+        ...updateSettingsDto.appearanceSettings,
+      };
+    }
+
+    if (updateSettingsDto.privacySettings) {
+      user.privacySettings = {
+        ...user.privacySettings,
+        ...updateSettingsDto.privacySettings,
+      };
+    }
+
+    return this.userRepository.save(user);
+  }
+
+  async getSettings(userId: string) {
+    const user = await this.findById(userId);
+    return {
+      notificationPreferences: user.notificationPreferences,
+      appearanceSettings: user.appearanceSettings,
+      privacySettings: user.privacySettings,
+    };
+  }
+
+  async getProfile(userId: string) {
+    const user = await this.findById(userId);
+    return {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      fullName: user.fullName,
+      bio: user.bio,
+      company: user.company,
+      role: user.role,
+      location: user.location,
+      education: user.education,
+      githubUrl: user.githubUrl,
+      linkedinUrl: user.linkedinUrl,
+      twitterUrl: user.twitterUrl,
+      skills: user.skills,
+      interests: user.interests,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      isEmailVerified: user.isEmailVerified,
+      notificationPreferences: user.notificationPreferences,
+      appearanceSettings: user.appearanceSettings,
+      privacySettings: user.privacySettings,
+    };
+  }
+
+  async updateProfile(userId: string, updateProfileDto: UpdateProfileDto) {
+    const user = await this.findById(userId);
+
+    // Check if username is being updated and is unique
+    if (
+      updateProfileDto.username &&
+      updateProfileDto.username !== user.username
+    ) {
+      const existingUser = await this.userRepository.findOne({
+        where: { username: updateProfileDto.username },
+      });
+      if (existingUser) {
+        throw new ConflictException('Username already taken');
+      }
+    }
+
+    // Update user profile
+    Object.assign(user, updateProfileDto);
+
+    return this.userRepository.save(user);
   }
 }

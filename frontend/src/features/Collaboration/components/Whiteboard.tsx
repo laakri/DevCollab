@@ -231,7 +231,6 @@ export const Whiteboard = () => {
           return el;
         })
       );
-
       redrawCanvas();
     }
   };
@@ -387,6 +386,70 @@ export const Whiteboard = () => {
     redrawCanvas();
   }, [elements, selectedElement]);
 
+  // Add this new function to convert elements to SVG paths
+  const generateSVG = () => {
+    const svgElements = elements.map((element) => {
+      if (element.type === "pen" || element.type === "eraser") {
+        // Convert points to SVG path
+        const pathData = element.points.reduce((path, point, index) => {
+          return (
+            path +
+            (index === 0
+              ? `M ${point.x} ${point.y}`
+              : ` L ${point.x} ${point.y}`)
+          );
+        }, "");
+        return `<path d="${pathData}" stroke="${element.color}" stroke-width="${element.size}" fill="none" />`;
+      } else if (element.type === "circle") {
+        const startPoint = element.points[0];
+        const endPoint = element.points[element.points.length - 1];
+        const radius =
+          Math.sqrt(
+            Math.pow(endPoint.x - startPoint.x, 2) +
+              Math.pow(endPoint.y - startPoint.y, 2)
+          ) / 2;
+        const centerX = (startPoint.x + endPoint.x) / 2;
+        const centerY = (startPoint.y + endPoint.y) / 2;
+        return `<circle cx="${centerX}" cy="${centerY}" r="${radius}" stroke="${element.color}" stroke-width="${element.size}" fill="none" />`;
+      } else if (element.type === "square") {
+        const startPoint = element.points[0];
+        const endPoint = element.points[element.points.length - 1];
+        const width = endPoint.x - startPoint.x;
+        const height = endPoint.y - startPoint.y;
+        return `<rect x="${startPoint.x}" y="${startPoint.y}" width="${width}" height="${height}" stroke="${element.color}" stroke-width="${element.size}" fill="none" />`;
+      } else if (element.type === "line") {
+        const startPoint = element.points[0];
+        const endPoint = element.points[element.points.length - 1];
+        return `<line x1="${startPoint.x}" y1="${startPoint.y}" x2="${endPoint.x}" y2="${endPoint.y}" stroke="${element.color}" stroke-width="${element.size}" />`;
+      }
+      return "";
+    });
+
+    const width = canvasRef.current?.width || 800;
+    const height = canvasRef.current?.height || 600;
+
+    const svgContent = `
+      <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+        ${svgElements.join("\n        ")}
+      </svg>
+    `;
+
+    return svgContent;
+  };
+
+  const downloadSVG = () => {
+    const svgContent = generateSVG();
+    const blob = new Blob([svgContent], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "whiteboard.svg";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="h-full flex flex-col relative">
       <div className="p-2 border-b flex items-center justify-between bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -479,7 +542,22 @@ export const Whiteboard = () => {
             disabled={historyIndex >= history.length - 1}
           />
           <div className="w-px h-6 bg-border" />
-          <ToolbarButton Icon={Save} tooltip="Save" onClick={() => {}} />
+
+          <ToolbarButton
+            Icon={Save}
+            tooltip="Save"
+            onClick={() => {
+              const svgContent = generateSVG();
+              console.log("SVG Output:", svgContent);
+
+              // Optional: Also show compressed size
+              const compressed = svgContent.replace(/\s+/g, " ").trim();
+              console.log(
+                "Compressed size (bytes):",
+                new Blob([compressed]).size
+              );
+            }}
+          />
           <ToolbarButton Icon={Share} tooltip="Share" onClick={() => {}} />
           <ToolbarButton
             Icon={Download}
