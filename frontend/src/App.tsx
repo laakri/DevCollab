@@ -36,7 +36,7 @@ function App() {
               <Route path="/signup" element={<SignUpPage />} />
               <Route path="/verify-email" element={<VerifyEmailPage />} />
               <Route path="/projects" element={<LearningExchangePage />} />
-              <Route path="/tahchifih" element={<LiarGame />} />
+              <Route path="/AreYouLying" element={<LiarGame />} />
               <Route
                 path="/CollaborationPage"
                 element={<CollaborationPage />}
