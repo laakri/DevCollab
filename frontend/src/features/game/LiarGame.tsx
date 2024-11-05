@@ -450,7 +450,7 @@ export const LiarGame: React.FC = () => {
 
           {/* Player 2 - Right */}
           <div
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 rotate-90
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 
                     bg-black/40 backdrop-blur-md p-6 rounded-2xl
                     border border-white/10 shadow-2xl
                     hover:bg-black/50 transition-colors"
@@ -494,7 +494,7 @@ export const LiarGame: React.FC = () => {
 
           {/* Player 4 - Left */}
           <div
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 -rotate-90
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 -
                     bg-black/40 backdrop-blur-md p-6 rounded-2xl
                     border border-white/10 shadow-2xl
                     hover:bg-black/50 transition-colors"
