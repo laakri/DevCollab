@@ -29,7 +29,7 @@ function App() {
         <Router>
           <div className="min-h-screen flex flex-col">
             <Toaster />
-            {window.location.pathname !== "/tahchifih" && <Navbar />}
+            {window.location.pathname !== "/AreYouLying" && <Navbar />}
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
